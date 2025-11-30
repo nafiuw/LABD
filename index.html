@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LABD - Live Apartment Billing Dashboard</title>
+    <meta name="description" content="Live monitoring of electricity meters with real-time billing and payment integration">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="logo-text">LABD</div>
+                </div>
+                <nav class="nav-links">
+                    <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="#" id="addMeterNav"><i class="fas fa-plus-circle"></i> Add Meter</a>
+                    <a href="#"><i class="fas fa-file-invoice-dollar"></i> Payments</a>
+                    <a href="#"><i class="fas fa-wifi"></i> Wi-Fi Bills</a>
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-avatar">C</div>
+                    <span>Welcome Chief</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-title">
+            <h2>Dashboard Overview</h2>
+            <div class="beta-badge">This is the beta version</div>
+        </div>
+
+        <div class="welcome-section">
+            <h2>Welcome Chief</h2>
+            <p>Monitor your apartment electricity meters in real-time, view billing status, and make payments securely.</p>
+            <button class="btn btn-primary" id="addMeterBtn"><i class="fas fa-plus"></i> Add New Meter</button>
+            <div class="api-status">
+                <div class="status-dot status-green"></div>
+                <span>API Status: Operational • Last updated: <span id="lastUpdated">Just now</span></span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="stat-value" id="totalMeters">3</div>
+                <div class="stat-label">Total Meters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <div class="stat-value">৳ <span id="totalOutstanding">1,250.75</span></div>
+                <div class="stat-label">Total Outstanding</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="stat-value">1</div>
+                <div class="stat-label">Wi-Fi Connections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="stat-value">60s</div>
+                <div class="stat-label">Update Frequency</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-bolt"></i> Your Electricity Meters</h3>
+                <div class="health-status">
+                    <div class="status-dot status-green"></div>
+                    <span>Live Updates Active</span>
+                    <button class="btn btn-outline" id="refreshDataBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="meters-grid" id="metersContainer">
+                <!-- Meters populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-wifi"></i> Wi-Fi Bill Management</h3>
+            </div>
+            <form id="wifiForm">
+                <div class="form-group">
+                    <label class="form-label">ISP Name</label>
+                    <select class="form-control" id="ispName" required>
+                        <option value="">Select ISP</option>
+                        <option value="fm">FM Networks</option>
+                        <option value="link3">Link3</option>
+                        <option value="amber">Amber IT</option>
+                        <option value="other">Others</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Apartment Name</label>
+                        <input type="text" class="form-control" id="apartmentName" placeholder="e.g. Apartment Raj" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">User ID</label>
+                        <input type="text" class="form-control" id="wifiUserId" placeholder="Your ISP User ID" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Package/Fees (BDT)</label>
+                    <input type="number" class="form-control" id="wifiPackage" placeholder="e.g. 1000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-control" id="wifiPaymentMethod" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="bkash" selected>bKash Paybill (FM Networks)</option>
+                        <option value="nagad">Nagad</option>
+                        <option value="upay">Upay</option>
+                        <option value="card">Card Payment</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Wi-Fi Bill</button>
+            </form>
+            <div class="beta-notice">
+                <p><i class="fas fa-exclamation-circle"></i> <strong>Note:</strong> This is the beta version.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">
+                    © <span id="currentYear">2023</span> 
+                    <a href="https://instagram.com/nafiuw_nebir" target="_blank">nafiuw</a>. All rights reserved.
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add Meter Modal -->
+    <div class="modal" id="addMeterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Meter</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="tabs">
+                <div class="tab active" data-tab="prepaid">Prepaid Meter</div>
+                <div class="tab" data-tab="postpaid">Postpaid Meter</div>
+            </div>
+            <form id="meterForm">
+                <div class="tab-content active" id="prepaid-tab">
+                    <div class="form-group">
+                        <label class="form-label">Meter Name</label>
+                        <input type="text" class="form-control" id="prepaidName" placeholder="e.g. Apartment Raj" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Meter Number</label>
+                        <input type="text" class="form-control" id="prepaidMeterNo" placeholder="Enter meter number" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Consumer Number</label>
+                        <input type="text" class="form-control" id="prepaidConsumerNo" placeholder="Enter consumer number" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Prepaid Meter</button>
+                </div>
+                <div class="tab-content" id="postpaid-tab">
+                    <div class="form-group">
+                        <label class="form-label">Meter Name</label>
+                        <input type="text" class="form-control" id="postpaidName" placeholder="e.g. Apartment Shuvro" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Meter Number</label>
+                        <input type="text" class="form-control" id="postpaidMeterNo" placeholder="Enter meter number" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Consumer Number</label>
+                        <input type="text" class="form-control" id="postpaidConsumerNo" placeholder="Enter consumer number" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Postpaid Meter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="paymentTitle">Payment</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="paymentFormElement">
+                <div class="form-group">
+                    <label class="form-label">Meter</label>
+                    <input type="text" class="form-control" id="paymentMeter" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amount (BDT)</label>
+                    <input type="text" class="form-control" id="paymentAmount" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Select Payment Method</label>
+                    <div class="payment-channels">
+                        <div class="payment-channel" data-channel="bkash">
+                            <div class="payment-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="payment-name">bKash</div>
+                        </div>
+                        <div class="payment-channel" data-channel="nagad">
+                            <div class="payment-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="payment-name">Nagad</div>
+                        </div>
+                        <div class="payment-channel" data-channel="upay">
+                            <div class="payment-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="payment-name">Upay</div>
+                        </div>
+                        <div class="payment-channel" data-channel="card">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-name">Card</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="channelDetails" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" id="channelLabel">Phone Number</label>
+                        <input type="text" class="form-control" id="channelInput" placeholder="Enter your phone number" required>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="processPaymentBtn">Process Payment</button>
+                </div>
+            </form>
+            <div class="payment-processing" id="paymentProcessing">
+                <div class="spinner"></div>
+                <h4>Processing Payment</h4>
+                <p>Please wait while we process your payment...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
+    <script src="scripts/app.js"></script>
+</body>
+</html>
