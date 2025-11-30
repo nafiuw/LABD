@@ -1,25 +1,10 @@
 {
   "name": "labd-dashboard",
   "version": "1.0.0",
-  "description": "Live Apartment Billing Dashboard - Real-time electricity meter monitoring",
-  "main": "index.html",
+  "type": "module",
   "scripts": {
-    "dev": "live-server --port=3000",
-    "build": "echo 'No build process required for static site'",
-    "deploy": "echo 'Deploy to Vercel or Netlify'"
-  },
-  "keywords": [
-    "electricity",
-    "billing",
-    "dashboard",
-    "meter",
-    "monitoring",
-    "payment",
-    "responsive"
-  ],
-  "author": "nafiuw",
-  "license": "MIT",
-  "devDependencies": {
-    "live-server": "^1.2.2"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }
